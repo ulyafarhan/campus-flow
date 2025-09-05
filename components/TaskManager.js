@@ -2,6 +2,42 @@
 
 import { useState, useEffect } from 'react';
 import { addTask, getAllTasks, updateTask, deleteTask, getAllSchedules } from '../lib/database';
+import styles from '../styles/TaskManager.module.css';
+import cardStyles from '../styles/Dashboard.module.css'; // Kita gunakan ulang style card dari Dashboard
+
+// Komponen Card Tugas yang bisa digunakan ulang
+const TaskCard = ({ task, onToggleComplete, onDelete }) => {
+  const handleCheckboxChange = (e) => {
+    e.stopPropagation();
+    onToggleComplete(task);
+  };
+
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    onDelete(task.id);
+  };
+
+  return (
+    <div className={`${cardStyles.card} ${cardStyles.taskCard} ${task.isCompleted ? styles.completedTask : ''}`}>
+      <div className={cardStyles.taskInfo}>
+        <h3 style={{ textDecoration: task.isCompleted ? 'line-through' : 'none' }}>{task.title}</h3>
+        <p>{task.courseName}</p>
+        <span className={cardStyles.taskDeadline}>
+          Deadline: {new Date(task.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+        </span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <input 
+          type="checkbox" 
+          className={cardStyles.checkbox} 
+          checked={task.isCompleted} 
+          onChange={handleCheckboxChange} 
+        />
+        <button onClick={handleDeleteClick} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#EF4444' }}>Hapus</button>
+      </div>
+    </div>
+  );
+};
 
 export default function TaskManager() {
   const [tasks, setTasks] = useState([]);
@@ -10,13 +46,14 @@ export default function TaskManager() {
     title: '', description: '', deadline: '', courseName: '', isCompleted: false,
   });
 
+  const fetchData = async () => {
+    const allTasks = await getAllTasks();
+    setTasks(allTasks);
+    const allCourses = await getAllSchedules();
+    setCourses(allCourses);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const allTasks = await getAllTasks();
-      setTasks(allTasks);
-      const allCourses = await getAllSchedules();
-      setCourses(allCourses);
-    };
     fetchData();
   }, []);
 
@@ -27,9 +64,12 @@ export default function TaskManager() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.title || !formData.courseName || !formData.deadline) {
+      alert("Harap isi semua field yang wajib diisi.");
+      return;
+    }
     await addTask(formData);
-    const updatedTasks = await getAllTasks();
-    setTasks(updatedTasks);
+    fetchData(); // Muat ulang data
     setFormData({
       title: '', description: '', deadline: '', courseName: '', isCompleted: false,
     });
@@ -38,59 +78,61 @@ export default function TaskManager() {
   const handleToggleComplete = async (task) => {
     const updatedTask = { ...task, isCompleted: !task.isCompleted };
     await updateTask(updatedTask);
-    const updatedTasks = await getAllTasks();
-    setTasks(updatedTasks);
+    fetchData();
   };
 
   const handleDelete = async (id) => {
-    await deleteTask(id);
-    const updatedTasks = await getAllTasks();
-    setTasks(updatedTasks);
+    if (window.confirm("Apakah Anda yakin ingin menghapus tugas ini?")) {
+      await deleteTask(id);
+      fetchData();
+    }
   };
 
-  const pendingTasks = tasks.filter(task => !task.isCompleted);
-  const completedTasks = tasks.filter(task => task.isCompleted);
+  const pendingTasks = tasks.filter(task => !task.isCompleted).sort((a,b) => new Date(a.deadline) - new Date(b.deadline));
+  const completedTasks = tasks.filter(task => task.isCompleted).sort((a,b) => new Date(b.deadline) - new Date(a.deadline));
 
   return (
-    <div>
-      <h1>Manajemen Tugas</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="title" value={formData.title} onChange={handleChange} required placeholder="Nama Tugas" />
-        <select name="courseName" value={formData.courseName} onChange={handleChange} required>
+    <div className={styles.container}>
+      <h1 className={styles.header}>Manajemen Tugas</h1>
+      
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input type="text" name="title" value={formData.title} onChange={handleChange} required placeholder="Nama Tugas" className={styles.input} />
+        <select name="courseName" value={formData.courseName} onChange={handleChange} required className={styles.select}>
           <option value="">Pilih Mata Kuliah</option>
           {courses.map(course => (
             <option key={course.id} value={course.name}>{course.name}</option>
           ))}
         </select>
-        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Deskripsi Tugas"></textarea>
-        <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} required />
-        <button type="submit">Simpan Tugas</button>
+        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Deskripsi Tugas (Opsional)" className={styles.textarea}></textarea>
+        <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} required className={styles.input} />
+        <button type="submit" className={styles.primaryButton}>Simpan Tugas</button>
       </form>
 
-      <h3>Tugas Belum Selesai</h3>
-      {pendingTasks.length > 0 ? (
-        <ul>
-          {pendingTasks.map((task) => (
-            <li key={task.id}>
-              {task.title} ({task.courseName}) - Deadline: {new Date(task.deadline).toLocaleDateString()}
-              <input type="checkbox" checked={task.isCompleted} onChange={() => handleToggleComplete(task)} />
-              <button onClick={() => handleDelete(task.id)}>Hapus</button>
-            </li>
-          ))}
-        </ul>
-      ) : (<p>Tidak ada tugas.</p>)}
+      <section>
+        <h2 className={styles.sectionTitle}>Tugas Belum Selesai ({pendingTasks.length})</h2>
+        <div className={styles.taskList}>
+          {pendingTasks.length > 0 ? (
+            pendingTasks.map((task) => (
+              <TaskCard key={task.id} task={task} onToggleComplete={handleToggleComplete} onDelete={handleDelete} />
+            ))
+          ) : (
+            <div className={styles.emptyState}><p>Tidak ada tugas yang perlu dikerjakan.</p></div>
+          )}
+        </div>
+      </section>
 
-      <h3>Tugas Selesai</h3>
-      {completedTasks.length > 0 && (
-        <ul>
-          {completedTasks.map((task) => (
-            <li key={task.id}>
-              {task.title} ({task.courseName})
-              <button onClick={() => handleDelete(task.id)}>Hapus</button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <section>
+        <h2 className={styles.sectionTitle}>Tugas Selesai ({completedTasks.length})</h2>
+        <div className={styles.taskList}>
+          {completedTasks.length > 0 ? (
+            completedTasks.map((task) => (
+              <TaskCard key={task.id} task={task} onToggleComplete={handleToggleComplete} onDelete={handleDelete} />
+            ))
+          ) : (
+             <div className={styles.emptyState}><p>Belum ada tugas yang selesai.</p></div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

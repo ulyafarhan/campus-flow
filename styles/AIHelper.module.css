@@ -1,0 +1,198 @@
+/* styles/AIHelper.module.css */
+
+.container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.header {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .header {
+    color: var(--text-primary-dark);
+  }
+}
+
+.featureSection {
+  background-color: var(--card-background-light);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .featureSection {
+    background-color: var(--card-background-dark);
+  }
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .sectionTitle {
+    color: var(--text-primary-dark);
+  }
+}
+
+.sectionDescription {
+  font-size: 14px;
+  color: var(--text-secondary-light);
+  margin-bottom: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sectionDescription {
+    color: var(--text-secondary-dark);
+  }
+}
+
+.primaryButton {
+  background-color: var(--primary-light);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .primaryButton {
+    background-color: var(--primary-dark);
+  }
+}
+
+.primaryButton:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.extractionResult {
+  margin-top: 16px;
+  background-color: var(--background-light);
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .extractionResult {
+    background-color: var(--background-dark);
+  }
+}
+
+
+.extractionResult pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+.chatWindow {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  .chatWindow {
+    border-color: #374151;
+  }
+}
+
+.chatHistory {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.messageBubble {
+  padding: 10px 16px;
+  border-radius: 18px;
+  max-width: 80%;
+  line-height: 1.5;
+}
+
+.userMessage {
+  background-color: var(--primary-light);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .userMessage {
+    background-color: var(--primary-dark);
+  }
+}
+
+.aiMessage {
+  background-color: #E5E7EB;
+  color: var(--text-primary-light);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .aiMessage {
+    background-color: #374151;
+    color: var(--text-primary-dark);
+  }
+}
+
+.chatInputContainer {
+  display: flex;
+  padding: 12px;
+  border-top: 1px solid #E5E7EB;
+}
+
+@media (prefers-color-scheme: dark) {
+  .chatInputContainer {
+    border-top-color: #374151;
+  }
+}
+
+
+.chatInput {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
+  outline: none;
+  color: var(--text-primary-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .chatInput {
+    color: var(--text-primary-dark);
+  }
+}
+
+.sendButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}

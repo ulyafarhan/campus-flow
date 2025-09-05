@@ -1,0 +1,201 @@
+/* styles/FileManager.module.css */
+
+.container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .header {
+    color: var(--text-primary-dark);
+  }
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.primaryButton {
+  background-color: var(--primary-light);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .primaryButton {
+    background-color: var(--primary-dark);
+  }
+}
+
+.primaryButton:hover {
+  opacity: 0.9;
+}
+
+.viewToggle {
+  display: flex;
+  gap: 8px;
+}
+
+.toggleButton {
+  background: none;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggleButton {
+    border-color: #374151;
+  }
+}
+
+.toggleButton[data-active='true'] {
+  background-color: var(--primary-light);
+  border-color: var(--primary-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggleButton[data-active='true'] {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+}
+
+
+.fileGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fileCardGrid {
+  background-color: var(--card-background-light);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  position: relative;
+}
+
+.fileCardList {
+  background-color: var(--card-background-light);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (prefers-color-scheme: dark) {
+  .fileCardGrid, .fileCardList {
+    background-color: var(--card-background-dark);
+  }
+}
+
+
+.fileIcon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.fileInfo h3 {
+  font-size: 14px;
+  font-weight: 600;
+  word-break: break-all;
+  color: var(--text-primary-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .fileInfo h3 {
+    color: var(--text-primary-dark);
+  }
+}
+
+.fileInfo p {
+  font-size: 12px;
+  color: var(--text-secondary-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .fileInfo p {
+    color: var(--text-secondary-dark);
+  }
+}
+
+
+.deleteButton {
+  background: #FEE2E2;
+  color: #EF4444;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.deleteButton:hover {
+  background: #FECACA;
+}
+
+@media (prefers-color-scheme: dark) {
+  .deleteButton {
+    background: #451a20;
+    color: #f87171;
+  }
+  .deleteButton:hover {
+    background: #592d35;
+  }
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  background-color: var(--card-background-light);
+  border-radius: 12px;
+  color: var(--text-secondary-light);
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  .emptyState {
+    background-color: var(--card-background-dark);
+    color: var(--text-secondary-dark);
+  }
+}

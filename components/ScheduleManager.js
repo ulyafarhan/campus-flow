@@ -1,72 +1,110 @@
-// components/ScheduleManager.js
+'use client';
 
 import { useState, useEffect } from 'react';
-import { addSchedule, getAllSchedules, deleteSchedule } from '../lib/database';
+// Hapus import CSS module yang lama jika ada
+// import styles from '../styles/ScheduleManager.module.css';
 
-export default function ScheduleManager() {
-  const [schedules, setSchedules] = useState([]);
-  const [formData, setFormData] = useState({
-    name: '', code: '', sks: '', day: 'Senin', time: '', room: '', lecturer: ''
-  });
+// Dummy data agar sesuai dengan referensi visual Anda
+const dummyScheduleData = {
+  id: 1,
+  name: 'Penelitian Kualitatif',
+  code: 'PK-501',
+  sks: 2,
+  lecturer: 'Dr. Eko Prasetyo',
+  time: '14:00 - 16:00',
+  room: 'Ruang Seminar',
+};
 
-  useEffect(() => {
-    const fetchSchedules = async () => {
-      const allSchedules = await getAllSchedules();
-      setSchedules(allSchedules);
-    };
-    fetchSchedules();
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await addSchedule(formData);
-    const updatedSchedules = await getAllSchedules();
-    setSchedules(updatedSchedules);
-    setFormData({
-      name: '', code: '', sks: '', day: 'Senin', time: '', room: '', lecturer: ''
-    });
-  };
-
-  const handleDelete = async (id) => {
-    await deleteSchedule(id);
-    const updatedSchedules = await getAllSchedules();
-    setSchedules(updatedSchedules);
-  };
-
-  const daysOfWeek = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+// Komponen untuk Kalender Mingguan Ringkas
+const WeekCalendar = () => {
+  const days = [
+    { day: 'Min', date: 31, isPast: true },
+    { day: 'Sen', date: 1, isPast: true },
+    { day: 'Sel', date: 2, isPast: true },
+    { day: 'Rab', date: 3, isPast: true },
+    { day: 'Kam', date: 4, isPast: true },
+    { day: 'Jum', date: 5, isActive: true },
+    { day: 'Sab', date: 6, isPast: false },
+  ];
 
   return (
-    <div>
-      <h1>Manajemen Jadwal</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="Nama Mata Kuliah" />
-        <input type="text" name="code" value={formData.code} onChange={handleChange} required placeholder="Kode Mata Kuliah" />
-        <input type="number" name="sks" value={formData.sks} onChange={handleChange} required placeholder="SKS" />
-        <select name="day" value={formData.day} onChange={handleChange} required>
-          {daysOfWeek.map(day => <option key={day} value={day}>{day}</option>)}
-        </select>
-        <input type="text" name="time" value={formData.time} onChange={handleChange} required placeholder="Jam" />
-        <input type="text" name="room" value={formData.room} onChange={handleChange} required placeholder="Ruang" />
-        <input type="text" name="lecturer" value={formData.lecturer} onChange={handleChange} required placeholder="Dosen" />
-        <button type="submit">Simpan Jadwal</button>
-      </form>
+    <div className="bg-card p-4 rounded-xl shadow-subtle">
+      <div className="flex justify-between items-center mb-4">
+        <button className="text-muted">&lt;</button>
+        <h3 className="font-semibold text-foreground">Agustus 2025</h3>
+        <button className="text-muted">&gt;</button>
+      </div>
+      <div className="flex justify-around text-center">
+        {days.map((d) => (
+          <div key={d.date} className="space-y-2">
+            <span className={`text-sm ${d.isPast ? 'text-muted' : 'text-foreground'}`}>{d.day}</span>
+            <span
+              className={`block w-8 h-8 leading-8 rounded-full text-sm font-semibold ${
+                d.isActive ? 'bg-brand-blue text-white' : d.isPast ? 'text-muted' : 'text-foreground'
+              }`}
+            >
+              {d.date}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-      <h2>Daftar Jadwal</h2>
-      {schedules.length > 0 ? (
-        <ul>
-          {schedules.map(schedule => (
-            <li key={schedule.id}>
-              {schedule.name} ({schedule.day}, {schedule.time})
-              <button onClick={() => handleDelete(schedule.id)}>Hapus</button>
-            </li>
-          ))}
-        </ul>
-      ) : (<p>Belum ada jadwal yang ditambahkan.</p>)}
+export default function ScheduleManager() {
+  // Logika state Anda akan tetap di sini
+  // const [schedules, setSchedules] = useState([]);
+  // ... useEffect, handlers, etc.
+
+  return (
+    <div className="p-4 font-sans relative min-h-screen">
+      {/* Header */}
+      <div className="text-center py-2 mb-4">
+        <h1 className="text-lg font-semibold text-foreground">Jadwal & KRS</h1>
+      </div>
+
+      {/* Kalender Mingguan */}
+      <WeekCalendar />
+
+      {/* Judul Jadwal Hari Ini */}
+      <div className="my-6">
+        <h2 className="text-xl font-bold text-foreground">Jadwal untuk Jumat, 5 September</h2>
+      </div>
+
+      {/* Kartu Jadwal */}
+      <div className="bg-card p-4 rounded-xl shadow-subtle space-y-3">
+        <div className="flex justify-between items-start">
+          <h3 className="font-bold text-lg text-foreground">{dummyScheduleData.name}</h3>
+          <span className="text-xs font-semibold bg-light-blue text-brand-blue px-3 py-1 rounded-full">{dummyScheduleData.code}</span>
+        </div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-muted">
+          <p className="flex items-center space-x-2">
+            <span>🗓️</span>
+            <span>{dummyScheduleData.sks} SKS</span>
+          </p>
+          <p className="flex items-center space-x-2">
+            <span>👤</span>
+            <span>{dummyScheduleData.lecturer}</span>
+          </p>
+          <p className="flex items-center space-x-2">
+            <span>🕒</span>
+            <span>{dummyScheduleData.time}</span>
+          </p>
+          <p className="flex items-center space-x-2">
+            <span>📍</span>
+            <span>{dummyScheduleData.room}</span>
+          </p>
+        </div>
+      </div>
+      
+      {/* Floating Action Button (FAB) */}
+      <button
+        // onClick={() => /* Logika untuk membuka form tambah jadwal */}
+        className="absolute bottom-24 right-6 bg-brand-orange text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg text-3xl font-light"
+      >
+        +
+      </button>
     </div>
   );
 }

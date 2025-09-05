@@ -1,0 +1,64 @@
+/* styles/Layout.module.css */
+.appShell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  max-width: 640px; /* Batas lebar untuk tampilan seperti mobile di desktop */
+  margin: 0 auto;
+  background-color: var(--background);
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.mainContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: 100px; /* Beri ruang agar tidak tertutup nav */
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  background-color: var(--card);
+  border-top: 1px solid var(--border);
+  z-index: 1000;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 500;
+  transition: color 0.2s;
+  flex-grow: 1;
+  padding: 4px 0;
+}
+
+.navButton[data-active='true'] {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Style untuk stroke SVG ikon */
+.navButton svg path {
+  stroke: var(--muted-foreground);
+  transition: stroke 0.2s;
+}
+
+.navButton[data-active='true'] svg path {
+  stroke: var(--primary);
+}
