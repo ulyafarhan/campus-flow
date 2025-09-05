@@ -2,16 +2,19 @@
 'use client';
 
 import { useState } from 'react';
-import Dashboard from '../../components/Dashboard';
-import ScheduleManager from '../../components/ScheduleManager';
-import TaskManager from '../../components/TaskManager';
-import FileManager from '../../components/FileManager';
-import AttendanceTracker from '../../components/AttendanceTracker';
-import MeetingManager from '../../components/MeetingManager';
-import SemesterPlanner from '../../components/SemesterPlanner';
-import LecturerContactManager from '../../components/LecturerContactManager';
-import CommunicationTemplates from '../../components/CommunicationTemplates';
-import AIHelper from '../../components/AIHelper';
+import Dashboard from '../components/Dashboard';
+import ScheduleManager from '../components/ScheduleManager';
+import TaskManager from '../components/TaskManager';
+import FileManager from '../components/FileManager';
+import AIHelper from '../components/AIHelper';
+import BottomNavBar from '../components/navigation/BottomNavBar';
+
+// These components are not in the new nav, but we keep them for potential future use
+// import AttendanceTracker from '../components/AttendanceTracker';
+// import MeetingManager from '../components/MeetingManager';
+// import SemesterPlanner from '../components/SemesterPlanner';
+// import LecturerContactManager from '../components/LecturerContactManager';
+// import CommunicationTemplates from '../components/CommunicationTemplates';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -26,41 +29,26 @@ export default function Home() {
         return <TaskManager />;
       case 'files':
         return <FileManager />;
-      case 'attendance':
-        return <AttendanceTracker />;
-      case 'meetings':
-        return <MeetingManager />;
-      case 'planner':
-        return <SemesterPlanner />;
-      case 'contacts':
-        return <LecturerContactManager />;
-      case 'templates':
-        return <CommunicationTemplates />;
-      default:
       case 'ai':
-        return <AIHelper />; 
-      case 'default':
+        return <AIHelper />;
+      default:
         return <Dashboard />;
     }
   };
 
   return (
-    <div>
-      <nav style={{ display: 'flex', gap: '10px', overflowX: 'auto', padding: '10px' }}>
-        <button onClick={() => setActiveTab('dashboard')}>Dashboard</button>
-        <button onClick={() => setActiveTab('schedule')}>Jadwal</button>
-        <button onClick={() => setActiveTab('tasks')}>Tugas</button>
-        <button onClick={() => setActiveTab('files')}>File</button>
-        <button onClick={() => setActiveTab('attendance')}>Absensi</button>
-        <button onClick={() => setActiveTab('meetings')}>Pertemuan</button>
-        <button onClick={() => setActiveTab('planner')}>Perencana</button>
-        <button onClick={() => setActiveTab('contacts')}>Kontak Dosen</button>
-        <button onClick={() => setActiveTab('templates')}>Template</button>
-        <button onClick={() => setActiveTab('ai')}>Asisten AI</button>
-      </nav>
-      <main style={{ padding: '20px' }}>
+    <div className="flex flex-col min-h-screen">
+      {/*
+        The main content area.
+        We add padding to the bottom (pb-20) to ensure content isn't hidden
+        by the fixed BottomNavBar (which is 4rem/h-16 + some extra space).
+      */}
+      <main className="flex-grow p-4 md:p-6 pb-20">
         {renderContent()}
       </main>
+
+      {/* The new, fixed bottom navigation bar */}
+      <BottomNavBar activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
 }
